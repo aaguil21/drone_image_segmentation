@@ -72,11 +72,11 @@ such and IoU and the Dice Coefficient. They can be more reliable in cases where 
 
 For this reason, I will also be using the Intersection over Union (IoU) metric to understand the results in the training. IoU is given by 
 
-$$ IoU = {TP \over TP + TN + FP}$$
+$$ IoU = {TP \over TP + TN + FP} $$
 
 And the Dice Coefficient was used as one training losses in modeling. The Dice Coefficient is given by: 
 
-$$ Dice = {2*TP \over 2*TP + TN + FP}$$
+$$ Dice = {2*TP \over 2*TP + TN + FP} $$
 
 
 
