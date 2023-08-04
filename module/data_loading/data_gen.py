@@ -1,5 +1,8 @@
 import tensorflow as tf
 from tensorflow import keras
+import numpy as np
+from keras.utils import to_categorical
+from keras.preprocessing.image import img_to_array
 
 class DataGenerator(tf.keras.utils.Sequence):
     """
