@@ -1,20 +1,10 @@
-# Uncomment for use in Google Colab
-#!unzip processed.zip -d ./semantic_drone_dataset
-#!pip install git+https://github.com/tensorflow/examples.git
-
 import tensorflow as tf
 
 import matplotlib.pyplot as plt
 import numpy as np
-import cv2
 import albumentations as A
-from sklearn.model_selection import train_test_split
-import pandas as pd
-
-from tensorflow_examples.models.pix2pix import pix2pix
 
 from IPython.display import clear_output
-from glob import glob
 import os
 
 from data_loading.data_gen import DataGenerator
@@ -81,8 +71,8 @@ class DisplayCallback(tf.keras.callbacks.Callback):
 
 OUTPUT_CLASSES = 24
 
-model2 = unet_model(output_channels=OUTPUT_CLASSES, name = 'cc_seg')
-model2.compile(optimizer=tf.keras.optimizers.Adam(),
+model = unet_model(output_channels=OUTPUT_CLASSES, name = 'cc_seg')
+model.compile(optimizer=tf.keras.optimizers.Adam(),
               loss=tf.keras.losses.CategoricalCrossentropy(from_logits=True),
               metrics=['acc',
                        tf.keras.metrics.MeanIoU(num_classes=24, sparse_y_pred=False, sparse_y_true=False)])
@@ -94,24 +84,25 @@ checkpoint_cb = tf.keras.callbacks.ModelCheckpoint('seg_model_cc.h5',
                                                    save_best_only=True,
                                                    save_weights_only=True)
 
-model2_history = model2.fit(train_generator, epochs=EPOCHS,
+history = model.fit(train_generator, epochs=EPOCHS,
                           validation_data=val_generator,
                           callbacks=[DisplayCallback(), checkpoint_cb])
 
 
 fig, ax = plt.subplots(1, 3, figsize=(14,4))
-ax[0].plot(model2_history.history['loss'], label='Training Loss')
-ax[0].plot(model2_history.history['val_loss'], label='Validation Loss')
+ax[0].plot(history.history['loss'], label='Training Loss')
+ax[0].plot(history.history['val_loss'], label='Validation Loss')
 ax[0].legend()
 
-ax[1].plot(model2_history.history['acc'], label='Training Accuracy')
-ax[1].plot(model2_history.history['val_acc'], label='Validation Accuracy')
+ax[1].plot(history.history['acc'], label='Training Accuracy')
+ax[1].plot(history.history['val_acc'], label='Validation Accuracy')
 ax[1].legend()
 
-ax[2].plot(model2_history.history['mean_io_u_1'], label='Training Mean IoU')
-ax[2].plot(model2_history.history['val_mean_io_u_1'], label='Validation Mean IoU')
+ax[2].plot(history.history['mean_io_u_1'], label='Training Mean IoU')
+ax[2].plot(history.history['val_mean_io_u_1'], label='Validation Mean IoU')
 ax[2].legend()
-plt.savefig('./imgs/cc_seg_training_curves.png')
+
+plt.show()
 
 
 
