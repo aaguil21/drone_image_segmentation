@@ -9,7 +9,7 @@ import os
 
 from data_loading.data_gen import DataGenerator
 from data_loading.data_load import mask_decoding, mask_encoding
-from custom_models.u_net_model import unet_model
+from custom_models.custom_unet import *
 
 
 
@@ -20,8 +20,8 @@ transform = [
 ]
 
 
-img_folder = '../semantic_drone_dataset/processed/images/'
-mask_folder = '../semantic_drone_dataset/processed/label_images/'
+img_folder = './semantic_drone_dataset/processed/images/'
+mask_folder = './semantic_drone_dataset/processed/label_images/'
 
 img_files = np.sort(os.listdir(img_folder))
 mask_files = np.sort(os.listdir(mask_folder))
@@ -49,7 +49,7 @@ def display(display_list, name='None', epoch=0):
     plt.axis('off')
   file_name = name + '_' + str(epoch) + '_' + 'pred_mask.png' 
   fig.savefig('./imgs/' + file_name)
-  plt.show()
+  plt.show(block=False)
 
   
 # Create a sample image and mask the will be referenced in 
@@ -71,9 +71,9 @@ class DisplayCallback(tf.keras.callbacks.Callback):
 
 OUTPUT_CLASSES = 24
 
-model = unet_model(output_channels=OUTPUT_CLASSES, name = 'cc_seg')
+model = build_unet(in_shape=[224, 224, 3], output_channels=OUTPUT_CLASSES, name ='cc_seg')
 model.compile(optimizer=tf.keras.optimizers.Adam(),
-              loss=tf.keras.losses.CategoricalCrossentropy(from_logits=True),
+              loss=tf.keras.losses.CategoricalCrossentropy(), #from_logits=True),
               metrics=['acc',
                        tf.keras.metrics.MeanIoU(num_classes=24, sparse_y_pred=False, sparse_y_true=False)])
 

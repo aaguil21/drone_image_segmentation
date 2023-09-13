@@ -4,10 +4,15 @@ from fastapi.templating import Jinja2Templates
 from pathlib import Path
 import uvicorn
 import cv2
+import tensorflow as tf
+from module.custom_models.custom_unet import *
 
 app = FastAPI()
 camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 templates = Jinja2Templates(directory="templates")
+
+model = build_unet()
+model.load_weights('./models/seg_model_dice.h5')
 
 app.mount(
     "/static",
